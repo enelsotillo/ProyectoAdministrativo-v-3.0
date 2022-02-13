@@ -6,9 +6,10 @@ import javax.swing.ImageIcon;
 public class Bienvenida extends javax.swing.JFrame {
 
     public Bienvenida() {
+        
         initComponents();
         setIconImage(new ImageIcon(getClass().getResource("/ImagenSistema/logocarrete.jpg")).getImage());
-        
+        this.setExtendedState(MAXIMIZED_BOTH);
     }
 
 
@@ -61,8 +62,9 @@ public class Bienvenida extends javax.swing.JFrame {
         jMenu8 = new javax.swing.JMenu();
         jMenuItem39 = new javax.swing.JMenuItem();
         jMenuItem40 = new javax.swing.JMenuItem();
-        jMenuItem41 = new javax.swing.JMenuItem();
         jMenuItem42 = new javax.swing.JMenuItem();
+        jMenuItem41 = new javax.swing.JMenuItem();
+        jMenuItem1 = new javax.swing.JMenuItem();
         jMenu9 = new javax.swing.JMenu();
         jMenuItem43 = new javax.swing.JMenuItem();
         jMenuItem44 = new javax.swing.JMenuItem();
@@ -303,6 +305,14 @@ public class Bienvenida extends javax.swing.JFrame {
         });
         jMenu8.add(jMenuItem40);
 
+        jMenuItem42.setText("Bancos");
+        jMenuItem42.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem42ActionPerformed(evt);
+            }
+        });
+        jMenu8.add(jMenuItem42);
+
         jMenuItem41.setText("Tesoreria");
         jMenuItem41.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -311,8 +321,13 @@ public class Bienvenida extends javax.swing.JFrame {
         });
         jMenu8.add(jMenuItem41);
 
-        jMenuItem42.setText("jMenuItem42");
-        jMenu8.add(jMenuItem42);
+        jMenuItem1.setText("Pagos");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        jMenu8.add(jMenuItem1);
 
         MenuPricipal.add(jMenu8);
 
@@ -480,9 +495,26 @@ public class Bienvenida extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem41ActionPerformed
 
     private void jMenu8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenu8ActionPerformed
-       
-        
+        Bancos Banco = new Bancos();
+        Banco.setVisible(true);
+       // Banco.setLocationRelativeTo(this);
+       // Banco.setTitle("Bancos");
     }//GEN-LAST:event_jMenu8ActionPerformed
+
+    private void jMenuItem42ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem42ActionPerformed
+       Bancos Banco = new Bancos();
+        Banco.setVisible(true);
+       // Banco.setLocationRelativeTo(this);
+       // Banco.setTitle("Bancos");
+    }//GEN-LAST:event_jMenuItem42ActionPerformed
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        // TODO add your handling code here:
+        Pagos OrdenPago = new Pagos();
+        OrdenPago.setVisible(true);
+        OrdenPago.setLocation(60, 50);
+        OrdenPago.setTitle("Bancos");
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -533,6 +565,7 @@ public class Bienvenida extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu7;
     private javax.swing.JMenu jMenu8;
     private javax.swing.JMenu jMenu9;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem10;
     private javax.swing.JMenuItem jMenuItem11;
     private javax.swing.JMenuItem jMenuItem12;

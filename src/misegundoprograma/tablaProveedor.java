@@ -15,6 +15,7 @@ public class tablaProveedor extends javax.swing.JFrame {
     public static String NombreProveedor;
     public tablaProveedor() {
         initComponents();
+        
         MostrarTablaProveedores("");
     }
     public void MostrarTablaProveedores(String valor){ 

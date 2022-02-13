@@ -1,5 +1,5 @@
 package misegundoprograma;
-
+import java.awt.Color;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,15 +14,23 @@ import javax.swing.table.DefaultTableModel;
 public class Disponible extends javax.swing.JFrame {
 MiSegundoPrograma cc=new MiSegundoPrograma();
 Connection cn=cc.conexion();
+//DatosRegistrarFacturas RegistrarD = new DatosRegistrarFacturas();
+double totalBc=0;
+double totalXp=0;
+//double saldoPago=0;
 DefaultTableModel TablaDisponible;
 String BancosYCaja[]= new String[4];
 String PagosRegistrados[]= new String[5]; 
 DefaultTableModel TablaParaPagos;
-private static String codigoProveedorTemporal;
+private static int codigoProveedorTemporal=0;
+private static int codigoProveedor=0;
 private static String nombreProveedorTemporal;
+//ConsultaProveedorExterno provRegistro = new ConsultaProveedorExterno(); 
 
+//
     public Disponible() {
         initComponents();
+        
         // tabla de disponible de Bancos y cajas
         TablaDisponible = new DefaultTableModel();
         TablaDisponible.addColumn("Codigo");
@@ -32,9 +40,9 @@ private static String nombreProveedorTemporal;
         JtablaBancosyCajas.setModel(TablaDisponible);
         
         //tabla de para pagos pendiente
-        TablaParaPagos = new DefaultTableModel();
+       TablaParaPagos = new DefaultTableModel();
        TablaParaPagos.addColumn("Item");
-       TablaParaPagos.addColumn("Nro");
+       TablaParaPagos.addColumn("Codigo");
        TablaParaPagos.addColumn("Nombre Proveedor");
        TablaParaPagos.addColumn("fecha");
        TablaParaPagos.addColumn("Saldo");
@@ -66,6 +74,12 @@ private static String nombreProveedorTemporal;
         JtablaBancosyCajas = new javax.swing.JTable();
         txtTotalEnCaja = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        txtSaldoTotal = new javax.swing.JTextField();
+        jLabel10 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -116,7 +130,7 @@ private static String nombreProveedorTemporal;
             }
         });
 
-        MostrarPagosRegistrados.setText("Ingrese Pagos");
+        MostrarPagosRegistrados.setText("Mostrar Facturas x Pagar");
         MostrarPagosRegistrados.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 MostrarPagosRegistradosActionPerformed(evt);
@@ -138,6 +152,16 @@ private static String nombreProveedorTemporal;
 
         jLabel8.setText("Bancos y Caja en Efectivo");
 
+        jButton1.setText("Cargar Banco");
+
+        jButton2.setText("Cargar Pagos");
+
+        jLabel5.setText("Total:");
+
+        jLabel9.setText("Total:");
+
+        jLabel10.setText("Saldo:");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -146,24 +170,11 @@ private static String nombreProveedorTemporal;
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(MostrarPagosRegistrados)
-                        .addGap(562, 562, 562))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(txtTotalEnCaja, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(btnIngresarBancoYCaja, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabel8)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 703, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 322, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(422, 422, 422)
-                                .addComponent(txtPagosRegistrados, javax.swing.GroupLayout.PREFERRED_SIZE, 281, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(MostrarPagosRegistrados))
                             .addComponent(jLabel1)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -184,9 +195,35 @@ private static String nombreProveedorTemporal;
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel7)
                                     .addComponent(txtSaldo, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addContainerGap(564, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel10)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(txtSaldoTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addComponent(jButton2)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jLabel9)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(txtPagosRegistrados, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(btnIngresarBancoYCaja, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel8)
+                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                            .addComponent(jButton1)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(jLabel5)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                            .addComponent(txtTotalEnCaja, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 658, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(0, 0, Short.MAX_VALUE))))
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(421, 421, 421)
+                .addGap(373, 373, 373)
                 .addComponent(SalirDeCaja)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
@@ -213,22 +250,33 @@ private static String nombreProveedorTemporal;
                 .addComponent(jLabel8)
                 .addGap(3, 3, 3)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtTotalEnCaja, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
-                        .addComponent(MostrarPagosRegistrados)
-                        .addGap(239, 239, 239))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtTotalEnCaja, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton1)
+                            .addComponent(jLabel5))
+                        .addGap(297, 297, 297))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(14, 14, 14)
-                        .addComponent(jLabel2)
+                        .addGap(39, 39, 39)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel2)
+                            .addComponent(MostrarPagosRegistrados))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtPagosRegistrados, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtPagosRegistrados, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton2)
+                            .addComponent(jLabel9))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtSaldoTotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel10))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addComponent(SalirDeCaja)
-                .addGap(55, 55, 55))
+                .addGap(38, 38, 38))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -261,6 +309,7 @@ private static String nombreProveedorTemporal;
         CargarBancosYCaja();
         Limpiar();
         SumarBancosyCaja();
+        //TotalDisponible();
     }//GEN-LAST:event_btnIngresarBancoYCajaActionPerformed
 
     private void jTablaParaPagosRegistradosKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTablaParaPagosRegistradosKeyPressed
@@ -269,10 +318,11 @@ private static String nombreProveedorTemporal;
     }//GEN-LAST:event_jTablaParaPagosRegistradosKeyPressed
 
     private void MostrarPagosRegistradosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MostrarPagosRegistradosActionPerformed
-       
-        OrdenParaPagosRegistrados();
-        ConsultaProveedor();
+         RegistrosDeFactura();
+         ConsultaProveedor();
+        //OrdenParaPagosRegistrados();
         SumarPagosRegistrados();
+        ///TotalDisponible();
     }//GEN-LAST:event_MostrarPagosRegistradosActionPerformed
 
     
@@ -301,14 +351,25 @@ private static String nombreProveedorTemporal;
     //metodo sumar
     public void SumarBancosyCaja(){
         //recorre las filas de Jtable o tabla
-        double suma=0, total=0, iva=21, totalpago, montoIva=0;
+        double suma=0, total1=0;
             for (int i = 0; i < JtablaBancosyCajas.getRowCount(); i++) {
                 suma=Double.parseDouble( JtablaBancosyCajas.getValueAt(i,3).toString());
-                total=total+suma; //acumula    
+                total1=total1+suma; //acumula   
+                totalBc=total1;
             }
             
-             if(total>0){           
-                 txtTotalEnCaja.setText(String.valueOf(total));
+             if(total1>0){           
+                 txtTotalEnCaja.setText(String.valueOf(total1));
+                 txtSaldoTotal.setText(String.valueOf(totalBc-totalXp));
+                 txtSaldoTotal.setBackground(Color.green);
+                 if(Integer.parseInt(txtSaldoTotal.getText())>0){
+                  txtSaldoTotal.setBackground(Color.green);
+                 }else{
+                     txtSaldoTotal.setBackground(Color.red);
+                 }
+             }else{
+                 txtSaldoTotal.setText(String.valueOf(totalBc-totalXp));
+                 txtSaldoTotal.setBackground(Color.red);
              }
     }
     
@@ -316,68 +377,80 @@ private static String nombreProveedorTemporal;
     //metodo sumar
     public void SumarPagosRegistrados(){
         //recorre las filas de Jtable o tabla
-        double suma=0, total=0, iva=21, totalpago, montoIva=0;
+        double suma=0, total=0;
             for (int i = 0; i < jTablaParaPagosRegistrados.getRowCount(); i++) {
                 suma=Double.parseDouble( jTablaParaPagosRegistrados.getValueAt(i,4).toString());
-                total=total+suma; //acumula    
+                total=total+suma; //acumula 
+                totalXp=total;
             }
-            
              if(total>0){           
                  txtPagosRegistrados.setText(String.valueOf(total));
+                 txtSaldoTotal.setText(String.valueOf(totalBc-totalXp));
+                 txtSaldoTotal.setBackground(Color.green);
+                 if(Integer.parseInt(txtSaldoTotal.getText())>0){
+                 txtSaldoTotal.setBackground(Color.green);
+                 }else{
+                     txtSaldoTotal.setBackground(Color.red);
+                 }
+             }else{
+                 txtSaldoTotal.setText(String.valueOf(totalBc-totalXp));
+                 txtSaldoTotal.setBackground(Color.red);
+                 
              }
     }
     //metodo consulta de proveedor
-    public void ConsultaProveedor(){
-        ResultSet rsMiProveedor;
-        int codigoT = 0;
-    try {
-        PreparedStatement MiProveedor=cn.prepareStatement("select * from proveedor where id_proveedor=?");
-        MiProveedor.setInt(1,codigoT);
-        rsMiProveedor=MiProveedor.executeQuery();
-        while(rsMiProveedor.next()){
-            nombreProveedorTemporal=rsMiProveedor.getString("nombre");
-           // codigoProveedorTemporal=rsMiProveedor.getString("id_proveedor");
-        }
-    } catch (SQLException ex) {
-        Logger.getLogger(Disponible.class.getName()).log(Level.SEVERE, null, ex);
-    }
-     
-    }
-    
-    //metodos para buscar Orden para pago
-    public void OrdenParaPagosRegistrados(){
-        int item=0;
-        int codigoTemporal;
-        String sql="";
-        ResultSet rs;
+    public String ConsultaProveedor(){
+        String nombreT="";
         
+        int codigoT;
+     try {
+        ResultSet rsMiProveedor;
+        PreparedStatement MiProveedor=cn.prepareStatement("SELECT * FROM proveedor WHERE id_proveedor=?");
+        MiProveedor.setInt(1,codigoProveedorTemporal);
+        rsMiProveedor=MiProveedor.executeQuery();
+        while(rsMiProveedor.next()){   
+            //codigoT=rsMiProveedor.getShort("id_proveedor");    
+            nombreT=rsMiProveedor.getString("nombre");
+            System.out.println("Nombre: "+ nombreT +" Cod: ");
+             
+            
+        }
+      } catch (SQLException ex) {
+        Logger.getLogger(Disponible.class.getName()).log(Level.SEVERE, null, ex);
+     } 
+      return nombreT;
+    }   
+    // metodo unior 2 tablas
+    public void RegistrosDeFactura(){
+     int item=0;
+         
+     ResultSet RsRegistos;
+     PreparedStatement ConsultaDeRegistros;
     try {
-        PreparedStatement ConsultaParaPagos=cn.prepareStatement("select * from ordenparapagar");
-        ConsultaParaPagos.setString(1,codigoProveedorTemporal);
-        rs=ConsultaParaPagos.executeQuery();
-        while(rs.next()){
+         ConsultaDeRegistros = cn.prepareStatement("select * from ordenparapagar");
+         RsRegistos=ConsultaDeRegistros.executeQuery();
+        while(RsRegistos.next()){
+            codigoProveedorTemporal=Integer.parseInt(RsRegistos.getString("codigoProveedor"));
             item++;
             PagosRegistrados[0]=String.valueOf(item);
-            PagosRegistrados[1]=String.valueOf(rs.getInt("codigoProveedor"));
-            PagosRegistrados[2]=String.valueOf(nombreProveedorTemporal);
-            PagosRegistrados[3]=String.valueOf(rs.getObject("fechaDeRegistro"));
-            PagosRegistrados[4]=String.valueOf(rs.getDouble("totalPago"));
-            TablaParaPagos.addRow(PagosRegistrados);
-            
-    }
-        
-     jTablaParaPagosRegistrados.setModel(TablaParaPagos);
-     System.out.println(item);
-     System.out.println(rs.getObject("codigoProveedor"));
-     System.out.println(nombreProveedorTemporal);
-     System.out.println(rs.getObject("fechaDeRegistro"));
-     System.out.println(rs.getObject("totalPago"));
+            PagosRegistrados[1]=String.valueOf(RsRegistos.getString("codigoProveedor"));
+            PagosRegistrados[2]=ConsultaProveedor();
+            PagosRegistrados[3]=String.valueOf(RsRegistos.getString("fechaDeRegistro"));
+            PagosRegistrados[4]=String.valueOf(RsRegistos.getDouble("totalPago"));
+            TablaParaPagos.addRow(PagosRegistrados); 
+            System.out.println("codigo proveedor: "+codigoProveedorTemporal+" otro codigo: "+ConsultaProveedor()+"\n");
+        }
+        jTablaParaPagosRegistrados.setModel(TablaParaPagos);
     } catch (SQLException ex) {
         Logger.getLogger(Disponible.class.getName()).log(Level.SEVERE, null, ex);
     }
-    
+//       return codigoProveedorTemporal;
     }
-    
+    public Double TotalDisponible(){
+        double num=Double.parseDouble(txtTotalEnCaja.getText())-Double.parseDouble(txtPagosRegistrados.getText());
+        num=Double.parseDouble(txtSaldo.getText());
+        return num;
+    }
     
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -394,13 +467,18 @@ private static String nombreProveedorTemporal;
     private javax.swing.JButton MostrarPagosRegistrados;
     private javax.swing.JButton SalirDeCaja;
     private javax.swing.JButton btnIngresarBancoYCaja;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
@@ -410,6 +488,7 @@ private static String nombreProveedorTemporal;
     private javax.swing.JTextField txtNombre;
     private javax.swing.JTextField txtPagosRegistrados;
     private javax.swing.JTextField txtSaldo;
+    public javax.swing.JTextField txtSaldoTotal;
     private javax.swing.JTextField txtTotalEnCaja;
     // End of variables declaration//GEN-END:variables
 

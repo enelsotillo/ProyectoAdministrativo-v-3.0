@@ -360,7 +360,7 @@ Connection cn=cc.conexion();
             JOptionPane.showMessageDialog(null,"Cliente Modificado con Existo");
             limpiarTextos();
         }else{
-            JOptionPane.showMessageDialog(null,"Error en Modificado Cliente");
+            JOptionPane.showMessageDialog(null,"Error en Modificar Cliente");
             limpiarTextos();
         }
         
